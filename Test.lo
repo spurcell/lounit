@@ -6,6 +6,8 @@ create is <-> (name, proc) {
     passed      = true;
     assertions  = [];
     
+    // PRIVATE METHODS
+    
     /**
      * Records the result of an assertion in the test.
      *
@@ -20,7 +22,7 @@ create is <-> (name, proc) {
         assertions <+ result;
     };
     
-    // facet to pass into test procedure
+    // FACET to pass into test procedure
     
     procFacet = (
         
@@ -33,7 +35,7 @@ create is <-> (name, proc) {
         }
     );
 
-    // control facet to return to owner
+    // FACET to run the test (returned to owner)
     
     reply (
         
