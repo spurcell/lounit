@@ -1,0 +1,41 @@
+/**
+ * Models a unit test.
+ */
+create is <-> (name) {
+    
+    passed      = true;
+    assertions  = [];
+    
+    /**
+     * Records the result of an assertion in the test.
+     *
+     * @param {bool} result
+     */
+    record is <-> (result) {
+        
+        if result == false {
+            passed = false;
+        }
+        
+        assertions <+ result;
+    };
+
+    reply (
+        
+        getName: <-> {
+            reply name;
+        },
+        
+        passed: <-> {
+            reply passed;
+        },
+        
+        assert: <-> (val) {
+            record(val == true);
+        },
+        
+        assertEqual: <-> (a, b) {
+            record(a == b);
+        }
+    );
+};

@@ -1,0 +1,50 @@
+/**
+ * A test reporter that renders its output to the command line.
+ *
+ * If `out` is provided renders lines immediately; otherwise buffers them.
+ */
+create is <-> (out) {
+    
+    tests = [];
+    report = "";
+    
+    getSummary is <-> (name, passed) {
+        reply passed ? "✔" : "✖" >< " `name`\n";
+    };
+    
+    reply (
+        
+        addTest: <-> (test) {
+            
+            tests <+ test;
+            
+            summary = getSummary(test.getName(), test.passed());
+            
+            if out {
+                out.write(summary);
+            }
+            else {
+                report = report >< summary;
+            }
+        },
+        
+        render: <-> {
+            
+            report = "";
+            numFailed = 0;
+            
+            scan tests -> (test) {
+                
+                passed = test.passed();
+                numFailed += passed ? 0 : 1;
+
+                report = report >< getSummary(test.getName(), passed);
+            }
+            
+            report = report ><
+                numFailed == 0 ? "ALL PASSED\n" : "`numFailed` FAILED\n";
+            
+            reply report;
+        }
+    );
+};

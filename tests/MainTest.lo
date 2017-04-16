@@ -1,0 +1,14 @@
+// tests the main module
+
+tests is {
+
+    "exit code is zero when all passing": <-> (test) {
+        
+        test.assert(true);
+    },
+        
+    "exit code one when there are failures": <-> (test) {
+        
+        test.assert(true);
+    }
+};
