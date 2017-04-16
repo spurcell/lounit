@@ -1,0 +1,42 @@
+// tests the Test module
+
+tests is {
+
+    "run should add the test result to the report" => <-> (test) {
+        
+        testTest = ::Test.create("a test within a test...", <-> (test) {
+            
+            test.assert(true);
+        });
+        
+        mockReporter = (
+        
+            addResult: <-> (name, passed) {
+                
+                test.assertEqual << (name, "a test within a test...");
+                test.assert << (passed);
+            }
+        );
+        
+        testTest.run << (mockReporter);
+    },
+
+    "same but with failure" => <-> (test) {
+        
+        testTest = ::Test.create("this test should fail", <-> (test) {
+            
+            test.assert(false);
+        });
+        
+        mockReporter = (
+        
+            addResult: <-> (name, passed) {
+                
+                test.assertEqual << (name, "this test should fail");
+                test.assertEqual << (passed, false);
+            }
+        );
+        
+        testTest.run << (mockReporter);
+    }
+};
