@@ -8,15 +8,13 @@ create is <-> (out) {
     report      = "";
     numFailed   = 0;
     
-    getSummary is <-> (name, passed) {
-        reply passed ? "✔" : "✖" >< " `name`\n";
-    };
+    // OWNER FACET
     
     reply (
         
         addTest: <-> (name, passed) {
                         
-            summary = getSummary(name, passed);
+            summary = passed ? "✔" : "✖" >< " `name`\n";
             
             if out {
                 out.write(summary);
@@ -26,6 +24,11 @@ create is <-> (out) {
             }
             
             numFailed += passed ? 0 : 1;
+        },
+        
+        getFailedCount: <-> {
+            
+            reply numFailed;
         },
         
         finalize: <-> {

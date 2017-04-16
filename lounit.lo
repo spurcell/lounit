@@ -8,18 +8,7 @@ main is <-> (args, system, loader) {
     // load the test module
 /*    testModule = loader.load(testMod);*/
     
-    tests is {
-
-        "exit code is 0 when all passing" => <-> (test) {
-        
-            test.assert(true);
-        },
-        
-        "exit code is 1 when there are failures" => <-> (test) {
-        
-            test.assert(true);
-        }
-    };
+    tests is ::MainTest.tests;
     
     // run the tests
     // should we make it more obvious if something is sync or async?
@@ -31,16 +20,18 @@ main is <-> (args, system, loader) {
     // BUG when the testprocs were handlers, their calls were automatically attached to the outer task
     // which is NOT what the programmer would intend because they're detached from the flow
         
-    // since Test.create is compatible with scan, this could be fun: 
+    // since Test.create is compatible with scan, this could be cute: 
     // scan tests -> Test.create -> (test) {
     // like an alternative to fluent-style expressions
     scan tests -> (name, proc) {
 
-        test = ::Test.create(name, proc);
-
-        // run the test and wait for it
-        test.run << (report);
+        // create the test and run it
+        ::Test.create(name, proc).run << (report);
     }
     
     report.finalize;
+    
+    if report.getFailedCount() > 0 {
+        fail;
+    }
 };

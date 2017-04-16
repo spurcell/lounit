@@ -1,0 +1,14 @@
+// tests the main module
+
+tests is {
+
+    "replies success when all passing" => <-> (test) {
+        
+        test.assert(true);
+    },
+    
+    "fails when there are failures" => <-> (test) {
+        
+        test.assert(false);
+    }
+};

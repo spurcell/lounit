@@ -1,5 +1,8 @@
 /**
  * Models a unit test.
+ *
+ * @param name  the name of this test
+ * @param proc  the testing procedure for this test
  */
 create is <-> (name, proc) {
     
@@ -39,11 +42,11 @@ create is <-> (name, proc) {
     
     reply (
         
-        run: <-> (reporter) {
+        run: <-> (report) {
             
             proc << (procFacet);
             
-            reporter.addTest << (name, passed);
+            report.addTest << (name, passed);
         }
     );
 };
