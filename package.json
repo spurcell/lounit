@@ -1,0 +1,23 @@
+{
+  "name": "lounit",
+  "private": false,
+  "description": "A unit testing framework for Lo",
+  "version": "0.0.1",
+  "author": "Seth Purcell",
+  "preferGlobal": true,
+  "dependencies": {
+    "velo": "^0.4.0"
+  },
+  "scripts": {
+    "test": "velo run lounit.lo"
+  },
+  "bin": {
+    "lounit": "./lounit"
+  },
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "http://www.opensource.org/licenses/mit-license.php"
+    }
+  ]
+}
