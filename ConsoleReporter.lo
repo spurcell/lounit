@@ -5,7 +5,8 @@
  */
 create is <-> (out) {
     
-    report = "";
+    report      = "";
+    numFailed   = 0;
     
     getSummary is <-> (name, passed) {
         reply passed ? "✔" : "✖" >< " `name`\n";
@@ -24,26 +25,12 @@ create is <-> (out) {
                 report = report >< summary;
             }
             
-            monkeys = 42;
-        }
+            numFailed += passed ? 0 : 1;
+        },
         
-        //render: <-> {        
-        //
-        //     report = "";
-        //     numFailed = 0;
-        //
-        //     scan tests -> (test) {
-        //
-        //         passed = test.passed();
-        //         numFailed += passed ? 0 : 1;
-        //
-        //         report = report >< getSummary(test.getName(), passed);
-        //     }
-        //
-        //     report = report ><
-        //         numFailed == 0 ? "ALL PASSED\n" : "`numFailed` FAILED\n";
-        //
-        //     reply report;
-        // }
+        finalize: <-> {
+            
+            out.write(numFailed == 0 ? "ALL PASSED\n" : "`numFailed` FAILED\n");
+        }
     );
 };

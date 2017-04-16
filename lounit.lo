@@ -10,12 +10,12 @@ main is <-> (args, system, loader) {
     
     tests is {
 
-        "exit code is zero when all passing" => <-> (test) {
+        "exit code is 0 when all passing" => <-> (test) {
         
             test.assert(true);
         },
         
-        "exit code one when there are failures" => <-> (test) {
+        "exit code is 1 when there are failures" => <-> (test) {
         
             test.assert(true);
         }
@@ -26,7 +26,7 @@ main is <-> (args, system, loader) {
     // maybe the arrow is only present when async?
     // can we do scan tests >> log; ?
     
-    reporter = ::ConsoleReporter.create(system.out);
+    report = ::ConsoleReporter.create(system.out);
     
     // BUG when the testprocs were handlers, their calls were automatically attached to the outer task
     // which is NOT what the programmer would intend because they're detached from the flow
@@ -36,11 +36,8 @@ main is <-> (args, system, loader) {
         test = ::Test.create(name, testProc);
 
         // run the test and wait for it
-        test.run << (reporter);
+        test.run << (report);
     }
     
-    // render the test report
-    /*report = reporter.render();
-
-    system.out.writeln(report);*/
+    report.finalize;
 };
