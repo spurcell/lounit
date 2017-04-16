@@ -5,7 +5,6 @@
  */
 create is <-> (out) {
     
-    tests = [];
     report = "";
     
     getSummary is <-> (name, passed) {
@@ -14,11 +13,9 @@ create is <-> (out) {
     
     reply (
         
-        addTest: <-> (test) {
-            
-            tests <+ test;
-            
-            summary = getSummary(test.getName(), test.passed());
+        addTest: <-> (name, passed) {
+                        
+            summary = getSummary(name, passed);
             
             if out {
                 out.write(summary);
@@ -26,25 +23,27 @@ create is <-> (out) {
             else {
                 report = report >< summary;
             }
-        },
-        
-        render: <-> {
             
-            report = "";
-            numFailed = 0;
-            
-            scan tests -> (test) {
-                
-                passed = test.passed();
-                numFailed += passed ? 0 : 1;
-
-                report = report >< getSummary(test.getName(), passed);
-            }
-            
-            report = report ><
-                numFailed == 0 ? "ALL PASSED\n" : "`numFailed` FAILED\n";
-            
-            reply report;
+            monkeys = 42;
         }
+        
+        //render: <-> {        
+        //
+        //     report = "";
+        //     numFailed = 0;
+        //
+        //     scan tests -> (test) {
+        //
+        //         passed = test.passed();
+        //         numFailed += passed ? 0 : 1;
+        //
+        //         report = report >< getSummary(test.getName(), passed);
+        //     }
+        //
+        //     report = report ><
+        //         numFailed == 0 ? "ALL PASSED\n" : "`numFailed` FAILED\n";
+        //
+        //     reply report;
+        // }
     );
 };

@@ -33,13 +33,10 @@ main is <-> (args, system, loader) {
         
     scan tests -> (name, testProc) {
 
-        // create a test object for the test
-        test = ::Test.create(name);
+        test = ::Test.create(name, testProc);
 
-        // call the tester and wait for it
-        testProc(test);
-
-        reporter.addTest(test);
+        // run the test and wait for it
+        test.run << (reporter);
     }
     
     // render the test report
