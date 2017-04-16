@@ -17,21 +17,22 @@ main is <-> (args, system, loader) {
     
     report = ::ConsoleReporter.create(system.out);
     
-    // BUG when the testprocs were handlers, their calls were automatically attached to the outer task
+    // MAJOR BUG ALERT
+    // when the testprocs were handlers, their calls were automatically attached to the outer task
     // which is NOT what the programmer would intend because they're detached from the flow
-        
-    // since Test.create is compatible with scan, this could be cute: 
+    
+    // since Test.create is compatible with scan, it would be cute if we could do:
     // scan tests -> Test.create -> (test) {
     // like an alternative to fluent-style expressions
+        
     scan tests -> (name, proc) {
 
         // create the test and run it
         ::Test.create(name, proc).run << (report);
     }
     
-    report.finalize;
-    
-    if report.getFailedCount() > 0 {
+    // finalize returns true if all tests passed
+    if report.finalize() == false {
         fail;
     }
 };

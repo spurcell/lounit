@@ -12,7 +12,11 @@ create is <-> (out) {
     
     reply (
         
-        addTest: <-> (name, passed) {
+        /**
+         * Adds a test result to this report.
+         */
+        
+        addResult: <-> (name, passed) {
                         
             summary = passed ? "✔" : "✖" >< " `name`\n";
             
@@ -26,14 +30,14 @@ create is <-> (out) {
             numFailed += passed ? 0 : 1;
         },
         
-        getFailedCount: <-> {
-            
-            reply numFailed;
-        },
-        
+        /**
+         * Finalizes this test report, returning true if all tests passed.
+         */
         finalize: <-> {
             
             out.write(numFailed == 0 ? "ALL PASSED\n" : "`numFailed` FAILED\n");
+            
+            reply numFailed == 0;
         }
     );
 };

@@ -46,7 +46,7 @@ create is <-> (name, proc) {
             
             proc << (procFacet);
             
-            report.addTest << (name, passed);
+            report.addResult << (name, passed);
         }
     );
 };

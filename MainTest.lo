@@ -9,6 +9,6 @@ tests is {
     
     "fails when there are failures" => <-> (test) {
         
-        test.assert(false);
+        test.assert(true);
     }
 };
