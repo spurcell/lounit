@@ -1,34 +1,46 @@
+using Test as Test;
+using TestTest as testModule; // hardcoded till we have dynamic loading
+using ConsoleReporter as Reporter;
+
 // since we're JIT, we could actually support statically-checked compilation
 // of command line args
 
-main is <-> (args, system, loader) {
-
-    // get the test module from args
+main is (args, system) {
     
     // load the test module
-/*    testModule = loader.load(testMod);*/
+    // TODO support testpilot-style args: list of file paths or dir paths
     
-    tests is ::TestTest.tests;
+//     testModule = system.load(args[0]);
+//  system["loadModule"] or log("can't run without loadModule permission")
+//  or provide modules as caps on command line?
+
+    // how do we log from within the test modules?
+    // should we be able to provide a different env for the module here? to bind free vars perhaps?
     
     // run the tests
     // should we make it more obvious if something is sync or async?
     // maybe the arrow is only present when async?
     // can we do scan tests >> log; ?
     
-    report = ::ConsoleReporter.create(system.out);
+    report = Reporter.create(system.out);
     
     // MAJOR BUG ALERT
     // when the testprocs were handlers, their calls were automatically attached to the outer task
     // which is NOT what the programmer would intend because they're detached from the flow
+
     
-    // since Test.create is compatible with scan, it would be cute if we could do:
-    // scan tests -> Test.create -> (test) {
+    // since Test.create is compatible with the scan pairs, it would be cute if we could do:
+    // scan tests >> Test.create >> (test) {
     // like an alternative to fluent-style expressions
-        
-    scan tests -> (name, proc) {
+    // maybe scan can target both immediate handlers and procs,
+    // where immediate handlers can abort the scan (procs don't know they're serving a scan)
+    // or maybe a scan proc could send a reply to the scan saying to abort?
+    
+    scan testModule.tests >> (name, proc) {
 
         // create the test and run it
-        ::Test.create(name, proc).run << (report);
+        // this request statement includes a request expression
+        Test.create(name, proc).run <- report;
     }
     
     // fail the process if any test failed

@@ -1,13 +1,15 @@
 /**
  * Models a unit test.
  *
- * @param name  the name of this test
- * @param proc  the testing procedure for this test
+ * @param name      the name of this test
+ * @param runTest   the procedure to run for this test
  */
-create is <-> (name, proc) {
+create is (name, runTest) {
     
-    passedAssertions    = 0;
-    failedAssertions    = 0;
+    // count assertions
+    
+    numPassed = 0;
+    numFailed = 0;
     
     // PRIVATE METHODS
     
@@ -16,26 +18,31 @@ create is <-> (name, proc) {
      *
      * @param {bool} result
      */
-    record is <-> (result) {
+    record is (result) {
         
         if result {
-            passedAssertions++;
+            numPassed++;
         }
         else {
-            failedAssertions++;
+            numFailed++;
         }
     };
     
-    // facet to pass into test procedure
+    // facet to pass into the test procedure
     
-    procFacet = (
+    testFacet is (
         
-        assert: <-> (val) {
-            record(val == true);
+        assert: (val) {
+            record <- (val == true);
         },
         
-        assertEqual: <-> (a, b) {
-            record(a == b);
+        assertEqual: (a, b) {
+            record <- (a == b);
+        },
+        
+        assertFail: () {
+            
+            // TODO
         }
     );
 
@@ -43,11 +50,12 @@ create is <-> (name, proc) {
     
     reply (
         
-        run: <-> (report) {
+        run: (report) {
             
-            proc << (procFacet);
+            // run the test and collect results
+            runTest <- testFacet;
             
-            report.addResult << (name, failedAssertions == 0);
+            report.addResult <- name, numPassed, numFailed;
         }
     );
 };

@@ -1,42 +1,48 @@
-// tests the Test module
+/**
+ * tests the Test module
+ */
+
+using Test as Test;
 
 tests is {
 
-    "run should add the test result to the report" => <-> (test) {
+    "run should add the test result to the report" => (test) {
         
-        testTest = ::Test.create("a test within a test...", <-> (test) {
+        testTest = Test.create("a test within a test...", (test) {
             
-            test.assert(true);
+            test.assert <- (true);
         });
         
-        mockReporter = (
+        mockReport = (
         
-            addResult: <-> (name, passed) {
+            addResult: (name, passed, failed) {
                 
-                test.assertEqual << (name, "a test within a test...");
-                test.assert << (passed);
+                test.assertEqual <- name, "a test within a test...";
+                test.assertEqual <- passed, 1;
+                test.assertEqual <- failed, 0;
             }
         );
         
-        testTest.run << (mockReporter);
+        testTest.run <- mockReport;
     },
 
-    "same but with failure" => <-> (test) {
+    "same but with failure" => (test) {
         
-        testTest = ::Test.create("this test should fail", <-> (test) {
+        testTest = Test.create("this test should fail", (test) {
             
-            test.assert(false);
+            test.assertEqual <- true, false;
         });
         
-        mockReporter = (
+        mockReport = (
         
-            addResult: <-> (name, passed) {
+            addResult: (name, passed, failed) {
                 
-                test.assertEqual << (name, "this test should fail");
-                test.assertEqual << (passed, false);
+                test.assertEqual <- name, "this test should fail";
+                test.assertEqual <- passed, 0;
+                test.assertEqual <- failed, 1;
             }
         );
         
-        testTest.run << (mockReporter);
+        testTest.run <- mockReport;
     }
 };

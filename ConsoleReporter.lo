@@ -3,10 +3,15 @@
  *
  * If `out` is provided renders lines immediately; otherwise buffers them.
  */
-create is <-> (out) {
+
+ RED is (text) { reply "\x1B[38;5;1m`text`\x1B[0m"; };
+ GREEN is (text) { reply "\x1B[38;5;10m`text`\x1B[0m"; };
+
+create is (out) {
     
     report      = "";
-    numFailed   = 0;
+    tests       = (passed: 0, failed: 0);
+    assertions  = (passed: 0, failed: 0);
     
     // OWNER FACET
     
@@ -16,28 +21,41 @@ create is <-> (out) {
          * Adds a test result to this report.
          */
         
-        addResult: <-> (name, passed) {
+        addResult: (name, passed, failed) {
                         
-            summary = passed ? "✔" : "✖" >< " `name`\n";
-            
+            summary = failed > 0 ? RED("✖") : GREEN("✔") 
+                >< " `name` [`passed` of `passed + failed` passed]\n";
+                        
             if out {
-                out.write(summary);
+                out.write <- (summary);
             }
             else {
                 report = report >< summary;
             }
             
-            numFailed += passed ? 0 : 1;
+            assertions.passed += passed;
+            assertions.failed += failed;
+            
+            if failed > 0 {
+                tests.failed++;
+            }
+            else {
+                tests.passed++;
+            }
         },
         
         /**
          * Finalizes this test report, returning true if all tests passed.
          */
-        finalize: <-> {
+        finalize: () {
             
-            out.write(numFailed == 0 ? "ALL PASSED\n" : "`numFailed` FAILED\n");
+            allPassed = tests.failed == 0;
             
-            reply numFailed == 0;
+            out.writeln <- (allPassed ? 
+                GREEN("All `tests.passed` tests passed [`assertions.passed + assertions.failed` assertions]") : 
+                RED("`tests.failed` tests failed [`assertions.failed` assertions failed]"));
+            
+            reply allPassed;
         }
     );
 };

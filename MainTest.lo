@@ -1,14 +1,32 @@
 // tests the main module
+lounit is module;
 
 tests is {
 
     "replies success when all passing" => <-> (test) {
-        
-        test.assert(true);
+
+        mockSystem = (
+            
+            load: <-> (moduleId) {
+
+                test.assertEqual moduleId, "Mocky";
+            
+                reply (tests: {
+                
+                });
+            },
+            
+            out: (write: <-> {})
+        );
+
+        lounit.main ["MockModule"], mockSystem -> (result) {
+
+            test.assert true;
+        };
     },
     
     "fails when there are failures" => <-> (test) {
         
-        test.assert(true);
+        test.assert true;
     }
 };
